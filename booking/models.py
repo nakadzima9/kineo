@@ -9,7 +9,7 @@ class Booking(models.Model):
     pass
 
 
-class BookingHistory(models.Model):
+class PurchaseHistory(models.Model):
     pass
 
 
