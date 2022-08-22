@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  kineo_db:
+    container_name: kineo_db
+    image: postgres:13.0
+    env_file:
+      - .env-db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  kineo:
+    container_name: kineo
+    build: .
+    command: python /app/manage.py runserver 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - kineo_db
+volumes:
+  postgres_data:
