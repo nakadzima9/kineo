@@ -1,46 +1,66 @@
 from rest_framework import serializers
 from .models import Cinema, MovieFormat, Room, RoomFormat, Seat, ShowTime
+from movie.models import Movie
+
 
 class CinemaSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Cinema
-        fields = ['cinema_title', 'cinema_description', 'cinema_startTime', 'cinema_endTime', 'cinema_address', 'cinema_website']
+        fields = [
+            "id",
+            "cinema_title",
+            "cinema_description",
+            "cinema_startTime",
+            "cinema_endTime",
+            "cinema_address",
+            "cinema_website",
+        ]
 
 
 class RoomSerializer(serializers.ModelSerializer):
-    cinema = serializers.PrimaryKeyRelatedField()
+    cinema = serializers.PrimaryKeyRelatedField(queryset=Cinema.objects.all())
 
     class Meta:
         model = Room
-        fields = ['cinema', 'room_name', 'quanity_of_seats', 'scheme_of_places']
+        fields = ["id", "cinema", "room_name", "quantity_of_seats", "scheme_of_places"]
+
 
 class SeatSerializer(serializers.ModelSerializer):
-    room = serializers.PrimaryKeyRelatedField()
+    room = serializers.PrimaryKeyRelatedField(queryset=Room.objects.all())
 
     class Meta:
         model = Seat
-        fields = ['room', 'seat_number']
+        fields = ["id", "room", "seat_number"]
+
 
 class MovieFormatSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = MovieFormat
-        fields = ['type_name', 'price_for_adult', 'price_for_child']
+        fields = ["id", "type_name", "price_for_adult", "price_for_child"]
 
-class ShowTime(serializers.ModelSerializer):
-    room = serializers.PrimaryKeyRelatedField()
-    movie = serializers.PrimaryKeyRelatedField()
-    movie_format = serializers.PrimaryKeyRelatedField()
-    room_format = serializers.PrimaryKeyRelatedField()
+
+class RoomFormatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RoomFormat
+        fields = ["id", "type_name", "price_for_adult", "price_for_child"]
+
+
+class ShowTimeSerializer(serializers.ModelSerializer):
+    room = serializers.PrimaryKeyRelatedField(queryset=Room.objects.all())
+    movie = serializers.PrimaryKeyRelatedField(queryset=Movie.objects.all())
+    movie_format = serializers.PrimaryKeyRelatedField(
+        queryset=MovieFormat.objects.all()
+    )
+    room_format = serializers.PrimaryKeyRelatedField(queryset=Room.objects.all())
 
     class Meta:
         model = ShowTime
-        fields = ['room', 'movie', 'showtime', 'movie_format', 'room_format', 'price_for_adult', 'price_for_child']
-
-class RoomFormat(serializers.ModelSerializer):
-
-    class Meta:
-        model = Room
-        fields = ['type_name', 'price_for_adult', 'price_for_child']
-
+        fields = [
+            "room",
+            "movie",
+            "showtime",
+            "movie_format",
+            "room_format",
+            "price_for_adult",
+            "price_for_child",
+        ]

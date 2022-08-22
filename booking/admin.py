@@ -3,13 +3,13 @@ from .models import Ticket, TicketType, PurchaseHistory, Booking, PayMethod, Ord
 
 
 class TicketEditAdmin(admin.ModelAdmin):
-    readonly_fields = ('price',)
-    exclude = ('price',)
+    readonly_fields = ("price",)
+    exclude = ("price",)
 
 
 class PurchaseHistoryEditAdmin(admin.ModelAdmin):
-    readonly_fields = ('total_costs',)
-    exclude = ('total_costs',)
+    readonly_fields = ("total_costs",)
+    exclude = ("total_costs",)
 
 
 admin.site.register(Ticket, TicketEditAdmin)

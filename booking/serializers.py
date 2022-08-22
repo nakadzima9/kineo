@@ -1,59 +1,63 @@
 from rest_framework import serializers
 from .models import Ticket, TicketType, PurchaseHistory, Booking, PayMethod, Order
-
-
-class TicketSerializer(serializers.ModelSerializer):
-    ticket_type = serializers.PrimaryKeyRelatedField()
-    showtime = serializers.PrimaryKeyRelatedField()
-    seat = serializers.PrimaryKeyRelatedField()
-
-    class Meta:
-        model = Ticket
-        fields = ['ticket_type', 'showtime', 'seat', 'price', ]
+from cinema.models import Seat, ShowTime
+from users.models import User
 
 
 class TicketTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketType
-        fields = ['__all__']
+        fields = ["__all__"]
+
+
+class TicketSerializer(serializers.ModelSerializer):
+    ticket_type = serializers.PrimaryKeyRelatedField(queryset=TicketType.objects.all())
+    showtime = serializers.PrimaryKeyRelatedField(queryset=ShowTime.objects.all())
+    seat = serializers.PrimaryKeyRelatedField(queryset=Seat.objects.all())
+
+    class Meta:
+        model = Ticket
+        fields = ["id", "ticket_type", "showtime", "seat", "price"]
 
 
 class BookingSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField()
-    ticket = serializers.PrimaryKeyRelatedField()
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    ticket = serializers.PrimaryKeyRelatedField(queryset=Ticket.objects.all())
 
     class Meta:
         model = Booking
-        fields = ['user', 'ticket', 'when_reserved']
+        fields = ["id", "user", "ticket", "when_reserved"]
 
     def validate(self, attrs):
-        ticket = attrs.get('ticket')
+        ticket = attrs.get("ticket")
         seat = ticket.seat
         showtime = ticket.showtime
         query = Booking.objects.filter(ticket_seat=seat, ticket_showtime=showtime)
         if query.exists():
-            raise serializers.ValidationError('This seat is already reserved')
+            raise serializers.ValidationError("This seat is already reserved")
         return attrs
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    purchase_history = serializers.PrimaryKeyRelatedField()
-    ticket = serializers.PrimaryKeyRelatedField()
-    pay_method = serializers.PrimaryKeyRelatedField()
+    purchase_history = serializers.PrimaryKeyRelatedField(
+        queryset=PurchaseHistory.objects.all()
+    )
+    ticket = serializers.PrimaryKeyRelatedField(queryset=Ticket.objects.all())
+    pay_method = serializers.PrimaryKeyRelatedField(queryset=PayMethod.objects.all())
 
     class Meta:
         model = Order
-        fields = ['purchase_history', 'ticket', 'pay_method']
+        fields = ["id", "purchase_history", "ticket", "pay_method"]
 
 
-class PurchaseHistory(serializers.PrimaryKeyRelatedField):
-    owner = serializers.PrimaryKeyRelatedField()
-    total_costs = serializers.SerializerMethodField(method_name='get_total_costs')
+class PurchaseHistorySerializer(serializers.PrimaryKeyRelatedField):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    total_costs = serializers.SerializerMethodField(method_name="get_total_costs")
 
     class Meta:
         model = PurchaseHistory
-        fields = ['owner', 'total_costs']
-        read_only_fields = ['total_costs']
+        fields = ["id", "user", "total_costs"]
+        read_only_fields = ["total_costs"]
 
     def get_total_costs(self, obj):
         buff = Order.objects.filter(purchase_history=obj.pk)
@@ -63,7 +67,7 @@ class PurchaseHistory(serializers.PrimaryKeyRelatedField):
         return 0
 
 
-class PayMethod(serializers.ModelSerializer):
+class PayMethodSerializer(serializers.ModelSerializer):
     class Meta:
         model = PayMethod
-        fields = ['__all__']
+        fields = ["__all__"]

@@ -4,26 +4,34 @@ from cinema.models import ShowTime, Seat
 
 
 class Ticket(models.Model):
-    ticket_type = models.ForeignKey('TicketType', on_delete=models.PROTECT, verbose_name="Тип билета")
-    showtime = models.ForeignKey(ShowTime, on_delete=models.PROTECT, verbose_name="Время показа")
+    ticket_type = models.ForeignKey(
+        "TicketType", on_delete=models.PROTECT, verbose_name="Тип билета"
+    )
+    showtime = models.ForeignKey(
+        ShowTime, on_delete=models.PROTECT, verbose_name="Время показа"
+    )
     seat = models.ForeignKey(Seat, on_delete=models.PROTECT, verbose_name="Место")
     price = models.PositiveIntegerField(blank=True, null=True, verbose_name="Цена")
 
     def save(self, *args, **kwargs):
         if self.ticket_type.name.lower() == "adult":
-            self.price = self.showtime.movie_format.price_for_adult + \
-                         self.showtime.room_format.price_for_adult + \
-                         self.showtime.price_for_adult
+            self.price = (
+                self.showtime.movie_format.price_for_adult
+                + self.showtime.room_format.price_for_adult
+                + self.showtime.price_for_adult
+            )
             super(Ticket, self).save(*args, **kwargs)
         elif self.ticket_type.name.lower() == "child":
-            self.price = self.showtime.movie_format.price_for_child + \
-                         self.showtime.room_format.price_for_child + \
-                         self.showtime.price_for_child
+            self.price = (
+                self.showtime.movie_format.price_for_child
+                + self.showtime.room_format.price_for_child
+                + self.showtime.price_for_child
+            )
             super(Ticket, self).save(*args, **kwargs)
         super(Ticket, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f'Ticket: {self.ticket_type} {self.seat.seat_number}'
+        return f"Ticket: {self.ticket_type} seat: {self.seat.seat_number}"
 
     class Meta:
         verbose_name = "Билет"
@@ -41,8 +49,10 @@ class TicketType(models.Model):
 
 
 class Booking(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Владелец")
-    ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE, verbose_name="Билет")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Владелец"
+    )
+    ticket = models.ForeignKey("Ticket", on_delete=models.CASCADE, verbose_name="Билет")
     when_reserved = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -53,9 +63,15 @@ class Booking(models.Model):
 
 
 class Order(models.Model):
-    purchase_history = models.ForeignKey('PurchaseHistory', on_delete=models.PROTECT, verbose_name="История покупок")
-    ticket = models.OneToOneField('Ticket', on_delete=models.CASCADE, verbose_name="Билет")
-    pay_method = models.ForeignKey('PayMethod', on_delete=models.PROTECT, verbose_name="Метод оплаты")
+    purchase_history = models.ForeignKey(
+        "PurchaseHistory", on_delete=models.PROTECT, verbose_name="История покупок"
+    )
+    ticket = models.OneToOneField(
+        "Ticket", on_delete=models.CASCADE, verbose_name="Билет"
+    )
+    pay_method = models.ForeignKey(
+        "PayMethod", on_delete=models.PROTECT, verbose_name="Метод оплаты"
+    )
 
     # def save(self,*args, **kwargs):
     #     old_pk= self.purchase_history.pk
@@ -70,8 +86,12 @@ class Order(models.Model):
 
 
 class PurchaseHistory(models.Model):
-    owner = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name="Владелец")
-    total_costs = models.PositiveIntegerField(blank=True, null=True, verbose_name="Общая стоимость")
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name="Владелец"
+    )
+    total_costs = models.PositiveIntegerField(
+        blank=True, null=True, verbose_name="Общая стоимость"
+    )
 
     # def save(self, *args, **kwargs):
     #     if self.checker():
@@ -91,7 +111,7 @@ class PurchaseHistory(models.Model):
     #         return False
 
     def __str__(self):
-        return self.owner.email
+        return self.user.email
 
     class Meta:
         verbose_name_plural = "История покупок"
