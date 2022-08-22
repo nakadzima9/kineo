@@ -16,7 +16,7 @@ from .serializers import (
 
 class RegisterView(generics.GenericAPIView):
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]
+    permission_classes = (AllowAny,)
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -29,7 +29,7 @@ class RegisterView(generics.GenericAPIView):
 
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
-    permission_classes = [AllowAny]
+    permission_classes = (AllowAny,)
 
     def post(self, request):
         email = request.data["email"]
@@ -74,3 +74,4 @@ class FeedBackViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
