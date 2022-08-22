@@ -40,9 +40,9 @@ class DirectorSerializer(serializers.ModelSerializer):
 
 class MovieSerializer(serializers.ModelSerializer):
     movie_poster = serializers.ImageField(max_length=None, use_url=True)
-    movie_director = serializers.PrimaryKeyRelatedField(queryset=Director.objects.all())
-    movie_actor = serializers.PrimaryKeyRelatedField(queryset=Actor.objects.all())
-    movie_genre = serializers.PrimaryKeyRelatedField(queryset=Genre.objects.all())
+    movie_director = serializers.PrimaryKeyRelatedField(queryset=Director.objects.all(), many=True)
+    movie_actor = serializers.PrimaryKeyRelatedField(queryset=Actor.objects.all(), many=True)
+    movie_genre = serializers.PrimaryKeyRelatedField(queryset=Actor.objects.all(), many=True)
 
     class Meta:
         model = Movie
