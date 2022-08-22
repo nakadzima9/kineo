@@ -1,12 +1,13 @@
 from django.db import models
 from datetime import date
+from django.utils import timezone
 
 
 class Director(models.Model):
     director_name = models.CharField(max_length=255, verbose_name="Имя")
     director_career = models.TextField(verbose_name="Описание")
-    director_date_of_birth = models.CharField(max_length=100, verbose_name="Дата рождения")
-    director_place_of_birth = models.DateField(default=date.today, verbose_name="Место рождения")
+    director_date_of_birth = models.DateField(default=date.today, verbose_name="Дата рождения")
+    director_place_of_birth = models.CharField(max_length=100, verbose_name="Место рождение")
     director_image = models.ImageField(upload_to='directors/', verbose_name="Изображение")
 
     def __str__(self):
@@ -55,10 +56,17 @@ class Movie(models.Model):
     movie_genre = models.ManyToManyField(Genre, verbose_name="Жанр", related_name="film_genre")
     movie_duration = models.CharField(max_length=50, verbose_name="Длительность")
     movie_trailer = models.URLField(max_length=200, null=True, blank=True, verbose_name="Трейлер фильма")
-    movie_startProduction = models.DateField(auto_now=False, auto_now_add=False)
-    movie_endProduction = models.DateField(auto_now=False, auto_now_add=False)
-    is_production = models.BooleanField(default=False)
-    age_rating = models.PositiveSmallIntegerField(default=0)
+    movie_startProduction = models.DateField(auto_now=False, auto_now_add=False, verbose_name="Фильм в прокате")
+    movie_endProduction = models.DateField(auto_now=False, auto_now_add=False, verbose_name="Фильм снят с проката")
+    is_production = models.BooleanField(blank=True, null=True, verbose_name="В прокате")
+    age_rating = models.PositiveSmallIntegerField(default=0, verbose_name="Возрастной рейтинг")
+
+    def save(self, *args, **kwargs):
+        self.is_production = False
+        if self.movie_startProduction <= timezone.now().date() <= self.movie_endProduction:
+            self.is_production = True
+        super(Movie, self).save(*args, **kwargs)
+
 
     def __str__(self):
         return self.movie_title

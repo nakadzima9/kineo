@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import Cinema, MovieFormat, Room, RoomFormat, Seat, ShowTime
 
-# Register your models here.
+admin.site.register((Cinema, MovieFormat, Room, RoomFormat, Seat, ShowTime))
+
