@@ -79,7 +79,7 @@ class Order(models.Model):
     #     PurchaseHistory.objects.get(pk=self.purchase_history.pk).save()
 
     def __str__(self):
-        return self.purchase_history.owner.email
+        return self.purchase_history.user.email
 
     class Meta:
         verbose_name_plural = "Заказ"

@@ -51,7 +51,7 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = ["id", "purchase_history", "ticket", "pay_method"]
 
 
-class PurchaseHistorySerializer(serializers.PrimaryKeyRelatedField):
+class PurchaseHistorySerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     total_costs = serializers.SerializerMethodField(method_name="get_total_costs")
 
@@ -71,4 +71,4 @@ class PurchaseHistorySerializer(serializers.PrimaryKeyRelatedField):
 class PayMethodSerializer(serializers.ModelSerializer):
     class Meta:
         model = PayMethod
-        fields = ["__all__"]
+        fields = ["id", "name"]
