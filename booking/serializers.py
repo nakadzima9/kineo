@@ -7,7 +7,7 @@ from users.models import User
 class TicketTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketType
-        fields = ["__all__"]
+        fields = ["id", "name"]
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -18,6 +18,7 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = ["id", "ticket_type", "showtime", "seat", "price"]
+        read_only_fields = ["price"]
 
 
 class BookingSerializer(serializers.ModelSerializer):
@@ -32,7 +33,7 @@ class BookingSerializer(serializers.ModelSerializer):
         ticket = attrs.get("ticket")
         seat = ticket.seat
         showtime = ticket.showtime
-        query = Booking.objects.filter(ticket_seat=seat, ticket_showtime=showtime)
+        query = Booking.objects.filter(ticket__seat=seat, ticket__showtime=showtime)
         if query.exists():
             raise serializers.ValidationError("This seat is already reserved")
         return attrs
