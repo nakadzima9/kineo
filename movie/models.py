@@ -12,9 +12,6 @@ class Director(models.Model):
     director_place_of_birth = models.CharField(
         max_length=100, verbose_name="Место рождение"
     )
-    director_image = models.ImageField(
-        upload_to="directors/", verbose_name="Изображение"
-    )
 
     def __str__(self):
         return self.director_name
@@ -33,7 +30,6 @@ class Actor(models.Model):
     actor_place_of_birth = models.CharField(
         max_length=100, verbose_name="Место рождение"
     )
-    actor_image = models.ImageField(upload_to="actors/", verbose_name="Изображение")
 
     def __str__(self):
         return self.actor_name

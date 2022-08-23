@@ -9,7 +9,6 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class ActorSerializer(serializers.ModelSerializer):
-    actor_image = serializers.ImageField(max_length=None, use_url=True)
 
     class Meta:
         model = Actor
@@ -19,12 +18,10 @@ class ActorSerializer(serializers.ModelSerializer):
             "actor_career",
             "actor_date_of_birth",
             "actor_place_of_birth",
-            "actor_image",
         ]
 
 
 class DirectorSerializer(serializers.ModelSerializer):
-    director_image = serializers.ImageField(max_length=None, use_url=True)
 
     class Meta:
         model = Director
@@ -34,7 +31,6 @@ class DirectorSerializer(serializers.ModelSerializer):
             "director_career",
             "director_date_of_birth",
             "director_place_of_birth",
-            "director_image",
         ]
 
 
