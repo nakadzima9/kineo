@@ -66,5 +66,5 @@ docker-compose run --rm neoshop python manage.py createsuperuser
 * [DRF](https://www.django-rest-framework.org/)
 
 
-### Postman Collection **[Link](http://127.0.0.1:8000/api/v1/booking/)**
+### Postman Collection **[Link](https://www.getpostman.com/collections/021cad7ddcf55de04eeb)**
 ### Heroku app => **[Link](https://kineo-cinematica.herokuapp.com/)**
