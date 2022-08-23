@@ -51,7 +51,7 @@ class ShowTimeSerializer(serializers.ModelSerializer):
     movie_format = serializers.PrimaryKeyRelatedField(
         queryset=MovieFormat.objects.all()
     )
-    room_format = serializers.PrimaryKeyRelatedField(queryset=Room.objects.all())
+    room_format = serializers.PrimaryKeyRelatedField(queryset=RoomFormat.objects.all())
 
     class Meta:
         model = ShowTime
