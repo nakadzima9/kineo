@@ -6,5 +6,5 @@ __pycache__
 media/
 migrations/
 venv/
-
+env/
 db.sqlite3
